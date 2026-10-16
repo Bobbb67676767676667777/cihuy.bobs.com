@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyan! — Glitch Isekai World</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Nunito:wght@400;600;800;900&display=swap');
+
+:root{
+  --ink:#17152b; --cyan:#68fff0; --pink:#ff77d9; --purple:#a68aff;
+  --paper:#f7f4ff; --blue:#5264ef; --lime:#d9ff74;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  background-color:#c9c4ff;
+  background-image:
+    radial-gradient(circle at 15% 20%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 80% 35%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 60% 85%,#fff 0 1px,transparent 2px),
+    linear-gradient(135deg,#8d9cff,#f5a9e5 48%,#8ef6ee);
+  background-size:37px 37px,53px 53px,41px 41px,auto;
+  overflow-x:hidden;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.17;
+  background:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(22,18,50,.24) 4px);
+}
+button,a{font:inherit}
+button{cursor:pointer}
+.desktop{max-width:1240px;margin:0 auto;padding:16px;position:relative}
+.window{
+  border:2px solid var(--ink); background:var(--paper);
+  box-shadow:7px 7px 0 rgba(31,23,66,.28);
+}
+.titlebar{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  color:white;background:linear-gradient(90deg,#343b9f,#a95dd5 75%,#ff82d9);
+  font-family:'VT323',monospace;font-size:22px;letter-spacing:.4px;
+  user-select:none;
+}
+.window-controls{margin-left:auto;display:flex;gap:5px}
+.win-btn{
+  width:22px;height:21px;padding:0;border:1.5px solid var(--ink);
+  background:#f5f1ff;color:var(--ink);font-size:13px;font-weight:900;
+  box-shadow:2px 2px 0 var(--ink);line-height:1;
+}
+.win-btn:active{transform:translate(2px,2px);box-shadow:none}
+.browser{margin-bottom:16px}
+.browserbar{
+  display:flex;align-items:center;gap:9px;padding:8px 12px;
+  background:#e8e4ff;border-bottom:2px solid var(--ink);font-family:'VT323',monospace;font-size:20px
+}
+.address{background:white;border:1.5px solid #7770a7;padding:4px 10px;flex:1;min-width:0;color:#625b83}
+.hero{
+  min-height:440px;position:relative;overflow:hidden;isolation:isolate;
+  background:
+    linear-gradient(90deg,rgba(16,17,55,.86),rgba(25,20,65,.50) 52%,rgba(255,119,217,.08)),
+    radial-gradient(ellipse at 75% 42%,#ff77d977,transparent 35%),
+    linear-gradient(145deg,#343d9b,#15142f 58%,#6454b6);
+  color:white;padding:clamp(22px,5vw,58px);display:flex;align-items:center;
+}
+.hero:before{
+  content:"";position:absolute;inset:-50px;z-index:-1;opacity:.28;
+  background:repeating-linear-gradient(125deg,transparent 0 32px,#70fff0 33px 35px,transparent 36px 68px);
+  transform:skewY(-8deg)
+}
+.hero:after{
+  content:"";position:absolute;right:10%;top:12%;width:250px;height:250px;border-radius:50%;
+  border:2px dashed #8ffff0;box-shadow:0 0 0 18px #ff77d922,0 0 60px #ff77d966;
+  z-index:-1;animation:spin 28s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-copy{max-width:540px;position:relative;z-index:2}
+.kicker{font-family:'VT323',monospace;font-size:22px;color:var(--cyan);letter-spacing:1px}
+h1{font-size:clamp(38px,6vw,70px);line-height:.95;letter-spacing:-2px;margin:15px 0 16px;font-weight:900}
+h1 .pink{color:var(--pink);text-shadow:3px 3px 0 #32205b}
+.intro{max-width:400px;line-height:1.7;color:#e3e2ff;font-size:15px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.pixel-btn{
+  border:2px solid var(--ink);background:var(--cyan);color:var(--ink);
+  padding:11px 17px;font-weight:900;box-shadow:4px 4px 0 var(--ink);
+  transition:transform .12s,box-shadow .12s;
+}
+.pixel-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.pixel-btn.secondary{background:var(--pink)}
+.hero-sticker{
+  position:absolute;right:8%;bottom:4%;font-size:clamp(100px,19vw,205px);
+  filter:drop-shadow(5px 7px 0 #15142f);transform:rotate(8deg);z-index:1;
+  animation:bob 3s ease-in-out infinite;user-select:none
+}
+@keyframes bob{50%{transform:translateY(-12px) rotate(4deg)}}
+.sticker{
+  position:absolute;padding:9px 12px;border:2px solid var(--ink);
+  box-shadow:4px 4px 0 var(--ink);font-family:'VT323',monospace;font-size:22px;
+  transform:rotate(-8deg);z-index:3
+}
+.sticker.one{right:6%;top:10%;background:var(--lime);color:var(--ink)}
+.sticker.two{right:31%;bottom:13%;background:var(--pink);color:var(--ink);transform:rotate(7deg)}
+.sticker.three{right:4%;top:53%;background:var(--cyan);color:var(--ink);font-size:18px}
+.layout{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;margin-top:16px}
+.panel-body{padding:16px}
+.panel-title{font-family:'VT323',monospace;font-size:23px}
+.panel-sub{font-size:13px;color:#676184;line-height:1.65}
+.statusline{display:flex;align-items:center;gap:8px;font-family:'VT323',monospace;font-size:20px;margin:12px 0}
+.dot{width:10px;height:10px;border-radius:50%;background:#63d99c;box-shadow:0 0 0 3px #63d99c33}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}
+.mini{
+  border:1.5px solid var(--ink);background:#e9e5ff;padding:12px 8px;text-align:center;
+  box-shadow:3px 3px 0 #aaa0d0;min-width:0
+}
+.mini .emoji{font-size:27px;display:block;margin-bottom:5px}
+.mini span:last-child{font-size:12px;font-weight:800}
+.log{
+  background:#191832;color:#b7fff6;padding:13px;font-family:'VT323',monospace;
+  font-size:19px;line-height:1.4;min-height:110px;overflow-wrap:anywhere
+}
+.log .dim{color:#ff9ce4}
+.log .green{color:#d9ff74}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toolbar button{border:1.5px solid var(--ink);background:#e8e2ff;padding:7px 10px;font-size:12px;font-weight:800}
+.toolbar button:hover{background:var(--cyan)}
+
+/* ===== ABOUT ME ===== */
+.about{margin:16px 0 0}
+.about-body{display:grid;grid-template-columns:260px 1fr;gap:18px;padding:18px}
+.profile-card{
+  border:2px solid var(--ink);background:linear-gradient(160deg,#343d9b,#15142f 70%);
+  color:white;padding:16px;text-align:center;box-shadow:5px 5px 0 #aaa0d0;position:relative;overflow:hidden
+}
+.profile-card:before{
+  content:"";position:absolute;inset:0;opacity:.2;pointer-events:none;
+  background:repeating-linear-gradient(125deg,transparent 0 14px,#70fff0 15px 16px,transparent 17px 30px)
+}
+.avatar{
+  position:relative;width:128px;height:128px;margin:4px auto 12px;display:grid;place-items:center;
+  font-size:66px;background:#e9e5ff;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--pink);
+  cursor:pointer;user-select:none
+}
+.avatar.zzz:after{
+  content:"z Z Z";position:absolute;top:-14px;right:-18px;font-family:'VT323',monospace;font-size:24px;
+  color:var(--cyan);text-shadow:2px 2px 0 var(--ink);animation:float 2s ease-in-out infinite
+}
+@keyframes float{50%{transform:translateY(-8px)}}
+.avatar:hover{animation:shake .3s steps(2) 2}
+@keyframes shake{25%{transform:translate(-3px,2px)}75%{transform:translate(3px,-2px)}}
+.name{
+  font-size:34px;font-weight:900;letter-spacing:-1px;position:relative;
+  text-shadow:2px 0 var(--pink),-2px 0 var(--cyan);animation:glitch 4s steps(1) infinite
+}
+.rank{font-family:'VT323',monospace;font-size:20px;color:var(--lime);position:relative}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px;position:relative}
+.tag{
+  font-family:'VT323',monospace;font-size:17px;padding:2px 9px;border:1.5px solid var(--ink);
+  color:var(--ink);box-shadow:2px 2px 0 var(--ink)
+}
+.tag.a{background:var(--cyan)}.tag.b{background:var(--pink)}.tag.c{background:var(--lime)}
+.bio h3{font-family:'VT323',monospace;font-size:26px;margin:0 0 4px}
+.bio p{font-size:14px;line-height:1.7;margin:0 0 12px;color:#3d3860}
+.fact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.fact{border:1.5px solid var(--ink);background:#e9e5ff;padding:10px 12px;box-shadow:3px 3px 0 #aaa0d0}
+.fact b{display:block;font-family:'VT323',monospace;font-size:19px;color:#7a4fd0;font-weight:400}
+.fact span{font-size:14px;font-weight:800}
+.stats{background:#191832;padding:13px;border:2px solid var(--ink)}
+.stats-title{font-family:'VT323',monospace;color:var(--pink);font-size:19px;margin-bottom:8px}
+.stat{display:grid;grid-template-columns:130px 1fr 44px;gap:9px;align-items:center;margin:7px 0;
+  font-family:'VT323',monospace;font-size:18px;color:#b7fff6}
+.bar{height:15px;border:1.5px solid #b7fff6;background:#0d0c20;padding:2px}
+.bar i{display:block;height:100%;width:0;transition:width 1.4s steps(14);
+  background:repeating-linear-gradient(90deg,var(--cyan) 0 8px,transparent 8px 10px)}
+.bar i.p{background:repeating-linear-gradient(90deg,var(--pink) 0 8px,transparent 8px 10px)}
+.bar i.l{background:repeating-linear-gradient(90deg,var(--lime) 0 8px,transparent 8px 10px)}
+.about-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+
+.bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px}
+.statusbar{background:#e6e1ff;border-top:2px solid var(--ink);padding:8px 12px;font-family:'VT323',monospace;font-size:18px;display:flex;justify-content:space-between;gap:10px}
+.desktop-icons{display:flex;gap:16px;flex-wrap:wrap;margin:17px 0 4px}
+.desktop-icon{border:0;background:transparent;color:#272045;text-align:center;width:76px;padding:7px 3px;text-shadow:0 1px #fff}
+.desktop-icon .ico{display:block;font-size:32px;filter:drop-shadow(2px 2px 0 #fff)}
+.desktop-icon:hover{background:#ffffff66;outline:1px dashed #fff}
+.popup{
+  position:fixed;z-index:60;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(350px,calc(100vw - 30px));background:#efedff;border:2px solid var(--ink);
+  box-shadow:8px 8px 0 #17152b99;display:none
+}
+.popup.show{display:block;animation:pop .18s ease-out}
+@keyframes pop{from{opacity:0;transform:translate(-50%,-46%) scale(.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.popup-content{padding:20px;display:flex;gap:14px;align-items:flex-start}
+.warning{font-size:30px}
+.popup p{font-size:14px;line-height:1.6}
+.popup-actions{text-align:right;padding:0 16px 16px}
+#toast{position:fixed;bottom:18px;right:18px;z-index:80;background:#191832;color:var(--cyan);border:2px solid var(--pink);padding:12px 16px;box-shadow:4px 4px 0 #17152b;display:none;font-family:'VT323',monospace;font-size:21px;max-width:calc(100vw - 36px)}
+#toast.show{display:block}
+.glitch{animation:glitch 4s steps(1) infinite}
+@keyframes glitch{0%,94%,100%{text-shadow:2px 0 var(--pink),-2px 0 var(--cyan)}95%{text-shadow:-4px 1px var(--pink),4px -1px var(--cyan);transform:translateX(1px)}97%{text-shadow:3px -1px var(--cyan)}}
+footer{text-align:center;font-family:'VT323',monospace;font-size:19px;padding:18px 8px;color:#30284e}
+@media(max-width:760px){
+ .desktop{padding:9px}.hero{min-height:420px;padding:24px}.hero-sticker{right:3%;bottom:0;font-size:115px;opacity:.75}
+ .hero:after{width:160px;height:160px;right:4%}.sticker.one{right:3%;top:4%}.sticker.two{right:25%;bottom:5%}
+ .layout{grid-template-columns:1fr}.mini-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .browserbar{font-size:17px}.intro{max-width:95%}
+ .about-body{grid-template-columns:1fr;padding:12px}
+ .fact-grid{grid-template-columns:1fr}
+ .stat{grid-template-columns:104px 1fr 40px;font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="desktop">
+  <section class="window browser">
+    <div class="titlebar">
+      <span>🐾</span><span>Nyan! — Glitch Isekai World</span>
+      <div class="window-controls">
+        <button class="win-btn" aria-label="Minimize" onclick="notify('Minimized? nah, still here :3')">−</button>
+        <button class="win-btn" aria-label="Maximize" onclick="toggleMaximize()">□</button>
+        <button class="win-btn" aria-label="Close" onclick="showPopup('Close the portal?','The isekai world does not want you to leave yet.')">×</button>
+      </div>
+    </div>
+    <div class="browserbar">
+      <span>←</span><span>→</span><span>⟳</span>
+      <div class="address">🔒 https://nyan.glitch/another-world</div>
+      <span>✧</span>
+    </div>
+
+    <header class="hero" id="home">
+      <div class="hero-copy">
+        <div class="kicker">✦ YOU HAVE ENTERED: what are you doing here??</div>
+        <h1 class="glitch">Nyan!, welcome to my<br><span class="pink">dreams isekai</span><br>World</h1>
+        <p class="intro">Yo, a tiny portal to somewhere else.<br>Stay curious, traveler. Omoshiroi things inside! ♡</p>
+        <div class="actions">
+          <button class="pixel-btn" id="enterBtn">ENTER WORLD ↗</button>
+          <button class="pixel-btn secondary" id="surpriseBtn">???</button>
+        </div>
+      </div>
+      <div class="hero-sticker" aria-label="Cute cat sticker">ฅ^•ﻌ•^ฅ</div>
+      <div class="sticker one">NYA! ★</div>
+      <div class="sticker two">ERROR? ♡</div>
+      <div class="sticker three">WELCOME!!</div>
+    </header>
+
+    <div class="layout">
+      <section class="window">
+        <div class="titlebar"><span>✧</span><span>world_status.exe</span>
+          <div class="window-controls"><button class="win-btn" aria-label="Close status" onclick="notify('Status window stays open. It is stubborn.')">×</button></div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-title">Current dimension</div>
+          <div class="statusline"><span class="dot"></span><span id="statusText">A little glitchy, but okay.</span></div>
+          <p class="panel-sub">Location: somewhere between dreams and desktop icons.</p>
+          <div class="mini-grid">
+            <button class="mini" onclick="showPopup('Neko sticker','ฅ^•ﻌ•^ฅ  nyan!')"><span class="emoji">🐈</span><span>Neko</span></button>
+            <button class="mini" onclick="showPopup('Portal detected','A tiny door to another world has appeared.')"><span class="emoji">🌀</span><span>Portal</span></button>
+            <button class="mini" onclick="showPopup('Unknown item','It sparkles. Probably safe. Probably.')"><span class="emoji">💿</span><span>Old disk</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="window">
+        <div class="titlebar"><span>▣</span><span>tiny_terminal.txt</span>
+          <div class="window-controls"><button class="win-btn" aria-label="Clear terminal" id="clearLog">×</button></div>
+        </div>
+        <div class="panel-body">
+          <div class="log" id="log" aria-live="polite">
+            <div><span class="green">[OK]</span> portal connection established</div>
+            <div><span class="dim">[NYA]</span> neko says hello!</div>
+            <div>[INFO] reality.exe is running... kinda</div>
+          </div>
+          <div class="toolbar">
+            <button id="glitchBtn">GLITCH IT</button>
+            <button id="catBtn">MEOW!</button>
+            <button id="resetBtn">RESET WORLD</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== ABOUT ME ===== -->
+    <section class="window about" id="about">
+      <div class="titlebar"><span>👾</span><span>about_me.exe</span>
+        <div class="window-controls">
+          <button class="win-btn" aria-label="Minimize about" onclick="notify('Bobb is hiding. Introvert moment.')">−</button>
+          <button class="win-btn" aria-label="Close about" onclick="showPopup('Cannot close','Bobb is still inside. Please be quiet.')">×</button>
+        </div>
+      </div>
+      <div class="about-body">
+        <div class="profile-card">
+          <div class="avatar zzz" id="avatar" role="img" aria-label="Sleepy Bobb avatar">😴</div>
+          <div class="name">Bobb</div>
+          <div class="rank">Lv.99 Sleepy Traveler</div>
+          <div class="tags">
+            <span class="tag a">introvert</span>
+            <span class="tag b">wibu certified</span>
+            <span class="tag c">sleepy af</span>
+          </div>
+        </div>
+
+        <div class="bio">
+          <h3>✦ About me</h3>
+          <p>Yo, I'm <b>Bobb</b>! Certified indoor creature. I just vibe in my own tiny world, binge anime, then pass out again. If I vanish, I'm not ghosting you, I'm recharging in another dimension. Omoshiroi, right? ♡</p>
+
+          <div class="fact-grid">
+            <div class="fact"><b>NAME</b><span>Bobb</span></div>
+            <div class="fact"><b>CLASS</b><span>Introvert 🌙 (stealth mode)</span></div>
+            <div class="fact"><b>FAVE QUEST</b><span>Watching anime 📺 sugoi!</span></div>
+            <div class="fact"><b>SIDE QUEST</b><span>Sleeping 24/7 😴 zzz</span></div>
+          </div>
+
+          <div class="stats">
+            <div class="stats-title">▣ bobb_stats.dat</div>
+            <div class="stat"><span>INTROVERT</span><div class="bar"><i data-w="95"></i></div><span>95%</span></div>
+            <div class="stat"><span>WIBU POWER</span><div class="bar"><i class="p" data-w="90"></i></div><span>90%</span></div>
+            <div class="stat"><span>SLEEP LEVEL</span><div class="bar"><i class="l" data-w="100"></i></div><span>MAX</span></div>
+            <div class="stat"><span>SOCIAL BATTERY</span><div class="bar"><i class="p" data-w="6"></i></div><span>6%</span></div>
+          </div>
+
+          <div class="about-actions">
+            <button class="pixel-btn" id="hiBtn">SAY HI 👋</button>
+            <button class="pixel-btn secondary" id="wakeBtn">WAKE BOBB</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="desktop-icons">
+      <button class="desktop-icon" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})"><span class="ico">👾</span>about_bobb</button>
+      <button class="desktop-icon" onclick="showPopup('My neko','Tiny cat. Big mysterious energy.')"><span class="ico">🐱</span>my_neko</button>
+      <button class="desktop-icon" onclick="showPopup('Anime list','Watching: yes. Finished: no. Sleeping: also yes. Sugoi!')"><span class="ico">📺</span>anime.exe</button>
+      <button class="desktop-icon" onclick="showPopup('Pixel garden','No watering needed. It runs on pure vibes.')"><span class="ico">🌱</span>pixel_garden</button>
+      <button class="desktop-icon" onclick="showPopup('Music player','♪ playing: somewhere else.mp3')"><span class="ico">💿</span>music.exe</button>
+      <button class="desktop-icon" onclick="showPopup('Recycle bin','Nothing to delete here. Yet.')"><span class="ico">🗑️</span>recycle_bin</button>
+    </div>
+    <div class="statusbar"><span>● ONLINE-ish</span><span id="clock">00:00:00</span><span>Made of pixels &amp; dreams ♡</span></div>
+  </section>
+  <footer>NYAN! WORLD © 20XX &nbsp; · &nbsp; please enjoy your stay ✧</footer>
+</div>
+
+<div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+  <div class="titlebar"><span>⚠</span><span id="popupTitle">A tiny message</span><div class="window-controls"><button class="win-btn" id="closePopup" aria-label="Close popup">×</button></div></div>
+  <div class="popup-content"><span class="warning">🌐</span><p id="popupMessage">Welcome to another world!</p></div>
+  <div class="popup-actions"><button class="pixel-btn" id="okayBtn">OK! ♡</button></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const popup = $('popup');
+let toastTimer;
+function notify(message){
+  const toast=$('toast'); toast.textContent=message; toast.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
+}
+function showPopup(title,message){
+  $('popupTitle').textContent=title; $('popupMessage').textContent=message;
+  popup.classList.add('show'); $('okayBtn').focus();
+}
+function closePopup(){popup.classList.remove('show')}
+$('closePopup').addEventListener('click',closePopup);
+$('okayBtn').addEventListener('click',closePopup);
+popup.addEventListener('click',e=>{if(e.target===popup)closePopup()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup()});
+
+$('enterBtn').addEventListener('click',()=>{
+  $('statusText').textContent='Portal open! Welcome, traveler.';
+  addLog('[PORTAL] welcome to the other side ✧','green');
+  notify('Nyan! You made it to another world.');
+  document.querySelector('.hero').style.filter='hue-rotate(18deg)';
+  setTimeout(()=>document.querySelector('.hero').style.filter='',700);
+});
+$('surpriseBtn').addEventListener('click',()=>{
+  const messages=[
+    'A tiny neko crossed your path. ฅ^•ﻌ•^ฅ',
+    'You found 1 pixel. It is very important.',
+    'The portal says: hi!',
+    'Error 404: ordinary day not found.'
+  ];
+  showPopup('???',messages[Math.floor(Math.random()*messages.length)]);
+});
+function addLog(message,kind=''){
+  const line=document.createElement('div');
+  if(kind){const span=document.createElement('span');span.className=kind;span.textContent=message.split(' ')[0]+' ';line.appendChild(span);line.append(document.createTextNode(message.substring(message.indexOf(' ')+1)));}
+  else line.textContent=message;
+  $('log').appendChild(line);
+  while($('log').children.length>6)$('log').firstElementChild.remove();
+}
+$('glitchBtn').addEventListener('click',()=>{
+  document.body.classList.add('glitch');
+  document.querySelector('.hero').style.filter='hue-rotate(100deg) saturate(1.6)';
+  addLog('[GLITCH] colors went a little wonky');
+  notify('glitch.exe activated ✦');
+  setTimeout(()=>{document.body.classList.remove('glitch');document.querySelector('.hero').style.filter='';},900);
+});
+$('catBtn').addEventListener('click',()=>{
+  addLog('[NYA] meow meow! ฅ^•ﻌ•^ฅ','dim');
+  notify('Nyaaaaa~ ♡');
+});
+$('resetBtn').addEventListener('click',()=>{
+  $('statusText').textContent='A little glitchy, but okay.';
+  $('log').innerHTML='<div><span class="green">[OK]</span> portal connection established</div><div><span class="dim">[NYA]</span> neko says hello!</div><div>[INFO] reality.exe is running... kinda</div>';
+  document.querySelector('.hero').style.filter='';
+  document.body.classList.remove('glitch');
+  notify('World reset. All good!');
+});
+$('clearLog').addEventListener('click',()=>{
+  $('log').replaceChildren();
+  notify('Terminal cleared.');
+});
+function toggleMaximize(){
+  const win=document.querySelector('.browser');
+  win.style.maxWidth=win.style.maxWidth?'':'100%';
+  notify('Window view toggled.');
+}
+function updateClock(){
+  $('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false});
+}
+updateClock();setInterval(updateClock,1000);
+
+/* ===== About Me interactions ===== */
+const bars=document.querySelectorAll('.bar i');
+function fillBars(){bars.forEach(b=>b.style.width=b.dataset.w+'%')}
+if('IntersectionObserver' in window){
+  new IntersectionObserver((entries,obs)=>{
+    entries.forEach(e=>{if(e.isIntersecting){fillBars();obs.disconnect()}});
+  },{threshold:.25}).observe($('about'));
+}else fillBars();
+
+let awake=false;
+$('avatar').addEventListener('click',()=>{
+  const lines=['zzz... five more minutes, nyan...','*rolls over and ignores you*','Bobb is binging episode 12 in his dreams. sugoi~'];
+  notify(lines[Math.floor(Math.random()*lines.length)]);
+});
+$('hiBtn').addEventListener('click',()=>{
+  showPopup('Message sent','Yo! Bobb saw your hi... and hid under the blanket. He is lowkey happy tho. ♡');
+  addLog('[BOBB] hi... (hides)','dim');
+});
+$('wakeBtn').addEventListener('click',()=>{
+  awake=!awake;
+  const av=$('avatar');
+  av.textContent=awake?'😳':'😴';
+  av.classList.toggle('zzz',!awake);
+  $('wakeBtn').textContent=awake?'LET HIM SLEEP':'WAKE BOBB';
+  notify(awake?'Bobb woke up. He is NOT happy. >_< baka!':'Bobb went back to sleep. Peace restored, yatta!');
+  addLog(awake?'[WARN] bobb.exe woke up unexpectedly':'[OK] bobb.exe back to sleep mode');
+});
+</script>
+</body>
+</html>
